@@ -8,8 +8,8 @@ import { Label } from '@/components/ui/label';
 import { Loader2, Eye, EyeOff, ArrowRight } from 'lucide-react';
 
 const Login: React.FC = () => {
-  const [email, setEmail] = useState('admin@zuppa.io');
-  const [password, setPassword] = useState('password123');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
