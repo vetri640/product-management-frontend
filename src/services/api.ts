@@ -17,19 +17,29 @@ api.interceptors.request.use((config) => {
 });
 
 // Map backend ProductDto to frontend Product model
-const mapProduct = (p: any): Product => ({
-  id: String(p.id),
-  name: p.name,
-  description: p.description,
-  price: p.price,
-  category: p.category || 'General',
-  modelNumber: p.modelNumber || `MOD-${p.id}`,
-  stock: p.stock || 0,
-  status: p.status || 'ACTIVE',
-  owner: p.owner || `User ${p.userId}`,
-  createdDate: p.createdDate || new Date().toISOString().split('T')[0],
-  imageUrl: p.imageUrl,
-});
+const mapProduct = (p: any): Product => {
+  let finalImageUrl = p.imageUrl;
+  if (finalImageUrl && finalImageUrl.startsWith('http://localhost:8081')) {
+    const backendBase = import.meta.env.VITE_API_URL 
+      ? import.meta.env.VITE_API_URL.replace('/api', '') 
+      : 'http://localhost:8081';
+    finalImageUrl = finalImageUrl.replace('http://localhost:8081', backendBase);
+  }
+
+  return {
+    id: String(p.id),
+    name: p.name,
+    description: p.description,
+    price: p.price,
+    category: p.category || 'General',
+    modelNumber: p.modelNumber || `MOD-${p.id}`,
+    stock: p.stock || 0,
+    status: p.status || 'ACTIVE',
+    owner: p.owner || `User ${p.userId}`,
+    createdDate: p.createdDate || new Date().toISOString().split('T')[0],
+    imageUrl: finalImageUrl,
+  };
+};
 
 // Map backend UserDto to frontend User model
 const mapUser = (u: any): User => ({
