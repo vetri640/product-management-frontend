@@ -205,28 +205,6 @@ const Login: React.FC = () => {
                 Create an account
               </Link>
             </p>
-
-            <div className="bg-slate-100 dark:bg-slate-800/50 rounded-xl p-4 text-left border border-slate-200 dark:border-slate-800/50">
-              <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">
-                Demo Credentials
-              </p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
-                <div>
-                  <span className="font-medium text-slate-700 dark:text-slate-300 block mb-1">Admin Access</span>
-                  <div className="text-slate-500 dark:text-slate-400 font-mono text-xs space-y-1">
-                    <div>admin@zuppa.io</div>
-                    <div>password123</div>
-                  </div>
-                </div>
-                <div>
-                  <span className="font-medium text-slate-700 dark:text-slate-300 block mb-1">User Access</span>
-                  <div className="text-slate-500 dark:text-slate-400 font-mono text-xs space-y-1">
-                    <div>john@zuppa.io</div>
-                    <div>password123</div>
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
         </motion.div>
       </div>
