@@ -9,7 +9,7 @@ import {
   Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle,
 } from '@/components/ui/dialog';
 import { User } from '../../types';
-import { userService } from '../../services/api';
+import { userService, authService } from '../../services/api';
 import { Loader2 } from 'lucide-react';
 
 const UsersList: React.FC = () => {
@@ -17,6 +17,34 @@ const UsersList: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [deleteId, setDeleteId] = useState<string | null>(null);
+
+  const [isInviteOpen, setIsInviteOpen] = useState(false);
+  const [inviteName, setInviteName] = useState('');
+  const [inviteEmail, setInviteEmail] = useState('');
+  const [invitePassword, setInvitePassword] = useState('');
+  const [inviteRole, setInviteRole] = useState('USER');
+  const [inviteLoading, setInviteLoading] = useState(false);
+  const [inviteError, setInviteError] = useState('');
+
+  const handleInvite = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setInviteLoading(true);
+    setInviteError('');
+    try {
+      await authService.register(inviteName, inviteEmail, invitePassword, inviteRole);
+      const data = await userService.getAll();
+      setUsers(data);
+      setIsInviteOpen(false);
+      setInviteName('');
+      setInviteEmail('');
+      setInvitePassword('');
+      setInviteRole('USER');
+    } catch (err: any) {
+      setInviteError(err.response?.data?.message || 'Failed to create user');
+    } finally {
+      setInviteLoading(false);
+    }
+  };
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -57,10 +85,11 @@ const UsersList: React.FC = () => {
           <p className="text-slate-500 dark:text-slate-400 mt-1">Manage platform administrators and regular users.</p>
         </div>
         <Button 
+          onClick={() => setIsInviteOpen(true)}
           className="bg-blue-600 hover:bg-blue-700 text-white shadow-md shadow-blue-500/20 rounded-xl px-5 h-10 transition-all hover:scale-105 active:scale-95"
         >
           <UserCog className="w-4 h-4 mr-2" />
-          Invite User
+          Create User
         </Button>
       </div>
 
@@ -224,6 +253,56 @@ const UsersList: React.FC = () => {
               Confirm Delete
             </Button>
           </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      {/* Create User Dialog */}
+      <Dialog open={isInviteOpen} onOpenChange={setIsInviteOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <form onSubmit={handleInvite}>
+            <DialogHeader>
+              <DialogTitle>Create New User</DialogTitle>
+              <DialogDescription>
+                Add a new user to the platform.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              {inviteError && (
+                <div className="bg-red-50 text-red-600 p-3 rounded-md text-sm">
+                  {inviteError}
+                </div>
+              )}
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Full Name</label>
+                <Input required value={inviteName} onChange={e => setInviteName(e.target.value)} placeholder="John Doe" />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Email</label>
+                <Input type="email" required value={inviteEmail} onChange={e => setInviteEmail(e.target.value)} placeholder="john@example.com" />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Password</label>
+                <Input type="password" required value={invitePassword} onChange={e => setInvitePassword(e.target.value)} />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Role</label>
+                <select 
+                  className="flex h-10 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm ring-offset-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-800 dark:bg-slate-950 dark:ring-offset-slate-950 dark:focus-visible:ring-slate-300"
+                  value={inviteRole} 
+                  onChange={e => setInviteRole(e.target.value)}
+                >
+                  <option value="USER">User</option>
+                  <option value="ADMIN">Admin</option>
+                </select>
+              </div>
+            </div>
+            <DialogFooter>
+              <Button type="button" variant="outline" onClick={() => setIsInviteOpen(false)}>Cancel</Button>
+              <Button type="submit" disabled={inviteLoading}>
+                {inviteLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                Create User
+              </Button>
+            </DialogFooter>
+          </form>
         </DialogContent>
       </Dialog>
     </motion.div>
