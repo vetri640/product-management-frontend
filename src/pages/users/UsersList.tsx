@@ -176,9 +176,6 @@ const UsersList: React.FC = () => {
                       </td>
                       <td className="px-6 py-4 text-right">
                         <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity">
-                          <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-500 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-500/10 rounded-lg">
-                            <UserCog className="w-4 h-4" />
-                          </Button>
                           <Button 
                             variant="ghost" 
                             size="icon" 
